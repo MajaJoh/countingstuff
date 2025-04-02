@@ -31,12 +31,28 @@ export default function App() {
 
   const changeCount = (amount, index) => {
     const newState = [...countables];
-    newState[index].count += amount;
+    const newCount = newState[index].count + amount;
+
+    if (newCount < 0) return; // Prevent negative values
+
+    newState[index].count = newCount;
     setCountables(newState);
   };
 
   const addNewCountable = (name) => {
+    if (!name.trim()) return;
+    if (
+      countables.some((item) => item.name.toLowerCase() === name.toLowerCase())
+    ) {
+      alert("This name already exists!");
+      return;
+    }
     const newState = [...countables, { name, count: 0 }];
+    setCountables(newState);
+  };
+
+  const deleteCountable = (index) => {
+    const newState = countables.filter((_, i) => i !== index);
     setCountables(newState);
   };
 
@@ -53,6 +69,7 @@ export default function App() {
                 countable={countable}
                 key={countable.name}
                 changeCount={changeCount}
+                deleteCountable={deleteCountable}
                 index={index}
               />
             ))}
